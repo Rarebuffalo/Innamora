@@ -1,0 +1,112 @@
+---
+import { Image } from "astro:assets";
+import BaseLayout from "../layouts/BaseLayout.astro";
+import Icon from "../components/Icon.jsx";
+import { PRODUCTS } from "../data/products.js";
+import still from "../assets/images/site/copper-still.jpg";
+import harvest from "../assets/images/site/harvest.jpg";
+import clay from "../assets/images/site/clay-vessels.jpg";
+import stills from "../assets/images/site/copper-stills-close.jpg";
+
+const schema = [{
+  "@context": "https://schema.org",
+  "@type": "AboutPage",
+  name: "About Innamora Fragrances & Aromatics",
+  url: new URL("/about", Astro.site).href,
+  about: { "@id": new URL("/#organization", Astro.site).href },
+}];
+---
+<BaseLayout
+  title="About Us — Traditional Attar Makers"
+  description="Innamora brings India's deg-bhapka attar tradition to modern B2B supply: alcohol-free attars, oils and hydrosols with consistent, documented quality."
+  schema={schema}
+>
+  <section class="page-hero">
+    <div class="wrap">
+      <ol class="crumbs" aria-label="Breadcrumb"><li><a href="/">Home</a></li><li aria-current="page">About Us</li></ol>
+      <div class="section-head section-head--split" style="margin-bottom:0">
+        <div>
+          <span class="eyebrow">About Innamora</span>
+          <h1>Heritage craft, <em>industry standards.</em></h1>
+        </div>
+        <p class="lead">Innamora — from the Italian <em>innamorarsi</em>, "to fall in love" — was founded to make authentic Indian naturals easy to buy for businesses: traditionally distilled, consistently produced and professionally supplied.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="wrap grid-2">
+      <div>
+        <span class="eyebrow">Who We Are</span>
+        <h2>Makers of <em>alcohol-free</em> Indian naturals</h2>
+        <p class="lead" style="margin-top:20px">We manufacture and supply attars, essential oils and hydrosols to perfumers, attar brands, cosmetic and personal-care manufacturers, incense makers, wellness companies and hospitality groups.</p>
+        <p>Our range of {PRODUCTS.length} signature naturals — from Rosewater and Khus to Champa and Raat Rani — is made the way Indian perfumers have worked for centuries: slow distillation in copper, natural sandalwood oil as the base, and patience instead of shortcuts. What we add is what modern buyers need: specification sheets, batch consistency, flexible quantities and packaging ready for market.</p>
+      </div>
+      <div class="frame frame--wide"><Image src={stills} alt="Polished copper distillation stills" widths={[560, 900]} sizes="(min-width: 900px) 46vw, 100vw" format="webp" quality={72} /></div>
+    </div>
+  </section>
+
+  <section class="section section--tint section--tight" aria-label="Innamora at a glance">
+    <div class="wrap stats">
+      <div class="stat"><strong>{PRODUCTS.length}</strong><span>Signature naturals</span></div>
+      <div class="stat"><strong>100%</strong><span>Alcohol-free</span></div>
+      <div class="stat"><strong>6</strong><span>Industries served</span></div>
+      <div class="stat"><strong>5</strong><span>Packaging formats</span></div>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="method-h">
+    <div class="wrap grid-2" style="align-items:start">
+      <div class="frame frame--tall"><Image src={still} alt="Traditional copper deg over a brick furnace" widths={[480, 760]} sizes="(min-width: 900px) 46vw, 100vw" format="webp" quality={72} /></div>
+      <div>
+        <span class="eyebrow">The Deg-Bhapka Method</span>
+        <h2 id="method-h">How a traditional <em>attar is made</em></h2>
+        <p class="lead" style="margin-top:20px">Attar is perfume without alcohol. Instead of dissolving fragrance in spirit, the scent of the botanical is distilled directly into a natural oil.</p>
+        <ol class="features" style="list-style:none;padding:0;margin-top:26px">
+          <li class="feature"><Icon name="leaf" /><div><h3>The deg</h3><p>Fresh flowers, roots or baked earth are loaded with water into a copper deg, and the lid is sealed with clay.</p></div></li>
+          <li class="feature"><Icon name="flame" /><div><h3>Slow fire</h3><p>A gentle wood fire heats the deg; aromatic vapours rise and travel through a bamboo pipe, the chonga.</p></div></li>
+          <li class="feature"><Icon name="drop" /><div><h3>The bhapka</h3><p>Vapours condense in a copper bhapka holding sandalwood oil, cooled in water. The oil absorbs the fragrance.</p></div></li>
+          <li class="feature"><Icon name="layers" /><div><h3>Repeat &amp; mature</h3><p>The charge is renewed with fresh botanicals over several days until the oil is saturated, then rested to mature.</p></div></li>
+        </ol>
+      </div>
+    </div>
+  </section>
+
+  <section class="section section--paper" aria-labelledby="values-h">
+    <div class="wrap">
+      <div class="section-head section-head--center">
+        <span class="eyebrow">What We Stand For</span>
+        <h2 id="values-h">Three promises to <em>every partner</em></h2>
+      </div>
+      <div class="industries" style="background:var(--line);border-color:var(--line)">
+        <div class="industry" style="background:var(--paper)"><Icon name="ban" /><h3>Purity</h3><p class="muted">No alcohol, solvents or synthetic carriers — natural botanicals and natural bases only.</p></div>
+        <div class="industry" style="background:var(--paper)"><Icon name="shield" /><h3>Consistency</h3><p class="muted">Every batch matched to the approved standard, with documentation you can file.</p></div>
+        <div class="industry" style="background:var(--paper)"><Icon name="gift" /><h3>Partnership</h3><p class="muted">Flexible quantities, private label and packaging support that grows with your brand.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="source-h">
+    <div class="wrap grid-2">
+      <div>
+        <span class="eyebrow">Sourcing</span>
+        <h2 id="source-h">Rooted in <em>Indian soil</em></h2>
+        <p class="lead" style="margin-top:20px">Roses, tuberose, mogra, champa and raat rani are gathered at their most fragrant hour; vetiver roots and sandalwood heartwood are selected for maturity; and clay for mitti attar is baked under the summer sun.</p>
+        <p>We work with growers and distillers who share our respect for the craft, so the character of each botanical reaches your product intact.</p>
+        <div class="actions"><a class="btn" href="/products">Explore Products <Icon name="arrow" /></a></div>
+      </div>
+      <div class="frame-stack">
+        <div class="frame frame--wide"><Image src={harvest} alt="Workers harvesting flowers in an Indian field" widths={[560, 900]} sizes="(min-width: 900px) 46vw, 100vw" format="webp" quality={70} /></div>
+        <div class="frame frame--small"><Image src={clay} alt="Traditional clay vessels" widths={[300, 480]} sizes="(min-width: 900px) 18vw, 40vw" format="webp" quality={70} /></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section cta-band" aria-labelledby="cta-h">
+    <div class="wrap">
+      <h2 id="cta-h">Partner with <em>Innamora</em></h2>
+      <p class="lead">Bulk supply, private label or custom packaging — tell us what you're building.</p>
+      <div class="actions"><a class="btn btn--gold" href="/contact">Contact Us <Icon name="arrow" /></a><a class="btn btn--ghost-light" href="/#packaging">Packaging Options</a></div>
+    </div>
+  </section>
+</BaseLayout>
