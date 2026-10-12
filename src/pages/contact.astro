@@ -1,0 +1,165 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import Icon from "../components/Icon.jsx";
+import { PRODUCTS } from "../data/products.js";
+import { SITE } from "../data/site.js";
+
+const TYPES = [
+  ["bulk", "Bulk quote"],
+  ["sample", "Samples"],
+  ["private", "Private label"],
+  ["packaging", "Custom packaging"],
+  ["other", "Other"],
+];
+const FAQ = [
+  ["Are your attars really alcohol-free?", "Yes. Our attars are distilled by the deg-bhapka method directly into natural sandalwood oil or a base you specify. No alcohol, solvents or synthetic carriers are used. Essential oils are supplied neat and rose water is a pure hydrosol."],
+  ["What is your minimum order quantity (MOQ)?", "MOQs depend on the product and format. Trial lots start from small quantities for formulation and approval; production MOQs are confirmed with your quotation."],
+  ["Can I get samples before placing a bulk order?", "Yes. Choose “Samples” in the enquiry form and list the products you'd like to evaluate. We'll confirm availability and dispatch."],
+  ["Do you offer private label and custom packaging?", "Yes. We can fill, label and box products under your brand. Use the Packaging Atelier on our home page to specify bottle, glass, closure and gift box, then send it with your enquiry."],
+  ["Which documents do you provide?", "Each product has a specification sheet. COA and MSDS are provided on request with your order."],
+  ["Do you ship outside India?", "Yes. We dispatch across India and to international buyers. Share your destination and we'll advise on packing and shipping."],
+];
+const schema = [{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  mainEntity: FAQ.map(([q, a]) => ({ "@type": "Question", name: q, acceptedAnswer: { "@type": "Answer", text: a } })),
+}];
+---
+<BaseLayout
+  title="Contact — Bulk Quotes, Samples & Private Label"
+  description="Contact Innamora Fragrances & Aromatics for bulk attar and essential oil quotes, samples, private label and custom packaging. We reply within one working day."
+  schema={schema}
+>
+  <section class="page-hero">
+    <div class="wrap">
+      <ol class="crumbs" aria-label="Breadcrumb"><li><a href="/">Home</a></li><li aria-current="page">Contact</li></ol>
+      <div class="section-head section-head--split" style="margin-bottom:0">
+        <div>
+          <span class="eyebrow">Contact Us</span>
+          <h1>Let's talk <em>business.</em></h1>
+        </div>
+        <p class="lead">Bulk quotes, samples, private label or custom packaging — send us your requirement and our team will reply within one working day.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="wrap grid-2" style="align-items:start">
+      <div>
+        <h2 class="sr-only">Contact details</h2>
+        <div class="contact-cards">
+          <a class="c-card" href={`https://wa.me/${SITE.whatsapp}`} target="_blank" rel="noopener"><span class="c-card__ico"><Icon name="chat" /></span><div><h3>WhatsApp</h3><p>{SITE.phone}</p></div></a>
+          <a class="c-card" href={`tel:${SITE.phoneHref}`}><span class="c-card__ico"><Icon name="phone" /></span><div><h3>Call</h3><p>{SITE.hours}</p></div></a>
+          <a class="c-card" href={`mailto:${SITE.email}`}><span class="c-card__ico"><Icon name="mail" /></span><div><h3>Email</h3><p>{SITE.email}</p></div></a>
+          <div class="c-card"><span class="c-card__ico"><Icon name="pin" /></span><div><h3>Office &amp; works</h3><address><p>{SITE.address.street}<br />{SITE.address.city}, {SITE.address.region} {SITE.address.postalCode}</p></address></div></div>
+        </div>
+        <div class="features" style="margin-top:36px">
+          <div class="feature"><Icon name="layers" /><div><h3>Bulk &amp; wholesale</h3><p>Production volumes with consistent, documented batches.</p></div></div>
+          <div class="feature"><Icon name="tag" /><div><h3>Private label</h3><p>Your brand, our craft — from formulation to finished box.</p></div></div>
+          <div class="feature"><Icon name="gift" /><div><h3>Corporate gifting</h3><p>Branded attar gift sets for events and clients.</p></div></div>
+        </div>
+      </div>
+
+      <form class="form" id="enquiry" novalidate>
+        <h2 style="font-size:2rem;margin-bottom:22px">Send an enquiry</h2>
+        <div class="form__grid">
+          <fieldset class="field full">
+            <legend>Enquiry type</legend>
+            <div class="radios">
+              {TYPES.map(([v, l], i) => <><input type="radio" name="type" id={`t-${v}`} value={v} checked={i === 0} /><label for={`t-${v}`}>{l}</label></>)}
+            </div>
+          </fieldset>
+          <div class="field"><label for="f-name">Your name *</label><input id="f-name" name="name" autocomplete="name" required /><span class="err">Please enter your name.</span></div>
+          <div class="field"><label for="f-company">Company *</label><input id="f-company" name="company" autocomplete="organization" required /><span class="err">Please enter your company name.</span></div>
+          <div class="field"><label for="f-email">Business email *</label><input id="f-email" name="email" type="email" autocomplete="email" required /><span class="err">Please enter a valid email.</span></div>
+          <div class="field"><label for="f-phone">Phone / WhatsApp</label><input id="f-phone" name="phone" type="tel" autocomplete="tel" placeholder="+91" /></div>
+          <div class="field"><label for="f-product">Product</label>
+            <select id="f-product" name="product">
+              <option value="">Multiple / not decided</option>
+              {PRODUCTS.map((p) => <option value={p.slug}>{p.name} — {p.type}</option>)}
+            </select>
+          </div>
+          <div class="field"><label for="f-qty">Estimated quantity</label>
+            <select id="f-qty" name="quantity">
+              <option>Samples / trial (under 1 kg)</option><option>1 – 10 kg</option><option>10 – 50 kg</option><option>50 – 200 kg</option><option>200 kg+</option><option>Retail-ready units (private label)</option>
+            </select>
+          </div>
+          <div class="field full"><label for="f-msg">Requirement *</label><textarea id="f-msg" name="message" required placeholder="Products, quantity, base oil preference, packaging, destination and timeline…"></textarea><span class="err">Please describe your requirement.</span></div>
+        </div>
+        <div class="form__foot">
+          <p class="form__note">We reply within one working day.</p>
+          <button class="btn btn--gold" type="submit">Send Enquiry <Icon name="arrow" /></button>
+        </div>
+        <div class="form__done" aria-live="polite">
+          <h2 style="font-size:2.2rem">Thank you.</h2>
+          <p class="muted" id="doneMsg" style="max-width:44ch;margin:12px auto 24px">Your enquiry has been received. Our team will reply within one working day.</p>
+          <a class="btn btn--ghost" href="/products">Browse Products</a>
+        </div>
+      </form>
+    </div>
+  </section>
+
+  <section class="section section--sand" aria-labelledby="faq-h">
+    <div class="wrap" style="max-width:960px">
+      <div class="section-head section-head--center"><span class="eyebrow">FAQ</span><h2 id="faq-h">Frequently asked <em>questions</em></h2></div>
+      <div class="faq">
+        {FAQ.map(([q, a]) => <details><summary>{q}<Icon name="plus" /></summary><p>{a}</p></details>)}
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<script>
+  import { attribution, track } from "../scripts/tracking.ts";
+  /* Enquiry form: pre-fill from links (?type=…&product=…&design=…), validate,
+     then submit. Set FORM_ENDPOINT (Formspree, Getform or your API) to receive
+     enquiries directly; until then the visitor's email app opens with the
+     enquiry composed. */
+  const FORM_ENDPOINT = "";
+  const INBOX = "hello@innamora.in";
+  const form = document.getElementById("enquiry") as HTMLFormElement;
+  const $ = (id: string) => document.getElementById(id) as HTMLInputElement;
+  const q = new URLSearchParams(location.search);
+  const type = q.get("type");
+  if (type && $(`t-${type}`)) $(`t-${type}`).checked = true;
+  const product = q.get("product");
+  if (product && form.querySelector(`#f-product option[value="${CSS.escape(product)}"]`)) $("f-product").value = product;
+  if (q.get("design")) $("f-msg").value = `Packaging specification from the Atelier:\n${q.get("design")}\n\nQuantity / timeline: `;
+  if (type === "sample") $("f-qty").selectedIndex = 0;
+
+  const rules: Record<string, (v: string) => boolean> = {
+    "f-name": (v) => v.trim().length > 1,
+    "f-company": (v) => v.trim().length > 1,
+    "f-email": (v) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v.trim()),
+    "f-msg": (v) => v.trim().length > 4,
+  };
+  const check = (id: string) => {
+    const ok = rules[id]($(id).value);
+    $(id).closest(".field")!.classList.toggle("invalid", !ok);
+    $(id).setAttribute("aria-invalid", String(!ok));
+    return ok;
+  };
+  Object.keys(rules).forEach((id) => $(id).addEventListener("blur", () => check(id)));
+
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const bad = Object.keys(rules).filter((id) => !check(id));
+    if (bad.length) return $(bad[0]).focus();
+    // Form fields + first-touch campaign attribution (utm_*, gclid, fbclid, landing page, referrer)
+    const data = { ...(Object.fromEntries(new FormData(form)) as Record<string, string>), ...attribution() };
+    const lead = () => track("generate_lead", { enquiry_type: data.type, product: data.product || "multiple", quantity: data.quantity });
+    if (FORM_ENDPOINT) {
+      const res = await fetch(FORM_ENDPOINT, { method: "POST", headers: { "Content-Type": "application/json", Accept: "application/json" }, body: JSON.stringify(data) }).catch(() => null);
+      if (!res || !res.ok) return alert(`Sorry, something went wrong. Please email ${INBOX}.`);
+      lead();
+    } else {
+      const body = Object.entries(data).filter(([, v]) => v).map(([k, v]) => `${k[0].toUpperCase() + k.slice(1)}: ${v}`).join("\n");
+      lead();
+      document.getElementById("doneMsg")!.textContent = `Your email app has opened with the enquiry ready to send. If it didn't, please write to ${INBOX}.`;
+      form.classList.add("is-sent");
+      location.href = `mailto:${INBOX}?subject=${encodeURIComponent(`Enquiry (${data.type}) — ${data.company}`)}&body=${encodeURIComponent(body)}`;
+      return;
+    }
+    form.classList.add("is-sent");
+  });
+</script>
