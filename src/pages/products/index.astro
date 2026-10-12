@@ -1,0 +1,120 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import ProductCard from "../../components/ProductCard.jsx";
+import Icon from "../../components/Icon.jsx";
+import { PRODUCTS, INDUSTRIES } from "../../data/products.js";
+import { cardProps } from "../../lib/images.js";
+
+const cards = Object.fromEntries(await Promise.all(PRODUCTS.map(async (p) => [p.slug, await cardProps(p)])));
+const base = Astro.site;
+const schema = [
+  {
+    "@context": "https://schema.org",
+    "@type": "ItemList",
+    name: "Innamora products",
+    itemListElement: PRODUCTS.map((p, i) => ({ "@type": "ListItem", position: i + 1, url: new URL(`/products/${p.slug}`, base).href, name: `${p.name} ${p.type}` })),
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "Home", item: base?.href },
+      { "@type": "ListItem", position: 2, name: "Products", item: new URL("/products", base).href },
+    ],
+  },
+];
+---
+<BaseLayout
+  title="Attars, Essential Oils & Rose Water — Bulk Supply"
+  description="Alcohol-free khus, mitti, rajnigandha, jasmine, champa and raat rani attars, chandan and rosemary oils and rose water, with specs for bulk buyers."
+  schema={schema}
+>
+  <section class="page-hero">
+    <div class="wrap">
+      <ol class="crumbs" aria-label="Breadcrumb"><li><a href="/">Home</a></li><li aria-current="page">Products</li></ol>
+      <div class="section-head section-head--split" style="margin-bottom:0">
+        <div>
+          <span class="eyebrow">Our Products</span>
+          <h1>Natural attars &amp; <em>aromatic oils</em></h1>
+        </div>
+        <p class="lead">Nine signature naturals for perfumers, cosmetic manufacturers, incense makers and wellness brands. Every product is alcohol-free, traditionally distilled and available in bulk, private label or custom packaging.</p>
+      </div>
+      <nav class="type-nav" aria-label="Product types">
+        <a href="#all-products">All {PRODUCTS.length} products</a>
+        <a href="#applications">Applications</a>
+        <a href="#supply">Supply formats</a>
+      </nav>
+    </div>
+  </section>
+
+  <section class="section" id="all-products" aria-labelledby="all-h">
+    <div class="wrap">
+      <div class="type-block__head">
+        <h2 id="all-h">All products <span class="muted" style="font-size:.5em;font-family:var(--f-body)">({PRODUCTS.length})</span></h2>
+        <p>Attars are distilled by the deg-bhapka method into natural sandalwood oil or your chosen base; essential oils are steam-distilled and supplied neat; rose water is a pure hydrosol. All are alcohol-free.</p>
+      </div>
+      <div class="p-grid">{PRODUCTS.map((p) => <ProductCard p={cards[p.slug]} />)}</div>
+    </div>
+  </section>
+
+  <section class="section section--tint" id="applications" aria-labelledby="apps-h">
+    <div class="wrap">
+      <div class="section-head section-head--split">
+        <div>
+          <span class="eyebrow">Fragrance Applications</span>
+          <h2 id="apps-h">Where our naturals <em>are used</em></h2>
+        </div>
+        <p class="lead">Recommended products for each industry. Every product is supplied with a specification sheet to support your formulation.</p>
+      </div>
+      <div class="industries">
+        {INDUSTRIES.map((x) => {
+          const keys = { "Perfumery & Attar Houses": ["Attar", "perfum"], "Cosmetics & Personal Care": ["Soap", "Skincare", "Hair", "Cosmetic", "lotion"], "Incense & Pooja": ["Incense", "Pooja"], "Wellness & Aromatherapy": ["Aromatherapy", "Massage"], "Home Fragrance": ["Home", "Candle"], "Hospitality & Corporate": ["Hospitality"] }[x.title];
+          const recs = PRODUCTS.filter((p) => p.applications.some((a) => keys.some((k) => a.toLowerCase().includes(k.toLowerCase()))));
+          return (
+            <div class="industry">
+              <Icon name={x.icon} />
+              <h3>{x.title}</h3>
+              <p>{x.text}</p>
+              <div class="chips">{recs.map((p) => <a class="chip" href={`/products/${p.slug}`} style={`--c:${p.color}`}><i></i>{p.name}</a>)}</div>
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="supply" aria-labelledby="supply-h">
+    <div class="wrap">
+      <div class="section-head section-head--split">
+        <div>
+          <span class="eyebrow">Supply Formats</span>
+          <h2 id="supply-h">From drums to <em>retail-ready</em></h2>
+        </div>
+        <p class="lead">Choose bulk containers for production, or let us fill, label and box finished products under your brand. Packaging can be designed in our <a href="/#packaging" style="text-decoration:underline">Packaging Atelier</a>.</p>
+      </div>
+      <div class="table-wrap">
+        <table class="spec">
+          <thead><tr><th scope="col">Format</th><th scope="col">Pack sizes</th><th scope="col">Best for</th></tr></thead>
+          <tbody>
+            <tr><td>Bulk — attars &amp; essential oils</td><td>1 kg &amp; 5 kg aluminium bottles · 25 kg HDPE drums</td><td>Manufacturers, compounders, attar houses</td></tr>
+            <tr><td>Bulk — rose water hydrosol</td><td>5 L, 25 L &amp; 50 L carboys · 200 L drums</td><td>Cosmetics, skincare, hospitality</td></tr>
+            <tr><td>Trial &amp; sample lots</td><td>10 ml – 1 kg</td><td>R&amp;D, formulation trials, approvals</td></tr>
+            <tr><td>Private label — retail-ready</td><td>6, 8, 12, 30 &amp; 50 ml bottles with your label and gift box</td><td>Attar brands, retailers, corporate gifting</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="caption">MOQs, pricing and lead times are quoted per product and order. Documentation (specification sheet, COA, MSDS) supplied on request.</p>
+    </div>
+  </section>
+
+  <section class="section cta-band" aria-labelledby="cta-h">
+    <div class="wrap">
+      <h2 id="cta-h">Need a sample or <em>bulk quote?</em></h2>
+      <p class="lead">Tell us the products, quantities and packaging you need.</p>
+      <div class="actions">
+        <a class="btn btn--gold" href="/contact?type=bulk">Request a Quote <Icon name="arrow" /></a>
+        <a class="btn btn--ghost-light" href="/contact?type=sample">Request Samples</a>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

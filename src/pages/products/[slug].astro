@@ -1,0 +1,157 @@
+---
+import { Image } from "astro:assets";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import ProductCard from "../../components/ProductCard.jsx";
+import Icon from "../../components/Icon.jsx";
+import { PRODUCTS, processSteps } from "../../data/products.js";
+import ProductVisual from "../../components/ProductVisual.jsx";
+import { SITE } from "../../data/site.js";
+import { cardProps, bottleImage, subtitleFor } from "../../lib/images.js";
+
+export function getStaticPaths() {
+  return PRODUCTS.map((p) => ({ params: { slug: p.slug }, props: { p } }));
+}
+const { p } = Astro.props;
+const url = new URL(`/products/${p.slug}`, Astro.site).href;
+const others = PRODUCTS.filter((x) => x.slug !== p.slug);
+const related = [...others.filter((x) => x.family === p.family), ...others.filter((x) => x.family !== p.family)].slice(0, 3);
+const relatedCards = await Promise.all(related.map(cardProps));
+const hero = { ...p, subtitle: subtitleFor(p), img: await bottleImage(p, { width: 1100, height: 1100, sizes: "(min-width: 960px) 46vw, 100vw" }) };
+const steps = processSteps(p);
+const shareImage = p.bottle || p.ingredient;
+const typeLabel = p.type === "Attar" ? `${p.name} Attar` : p.type === "Hydrosol" ? `${p.name} (Rose Hydrosol)` : `${p.name} Essential Oil`;
+
+const specs = [
+  ["Product type", `${p.type} — alcohol-free`],
+  ["Botanical source", p.botanical],
+  ["Plant part", p.part],
+  ["Extraction method", p.method],
+  ["Base / carrier", p.base],
+  ["Appearance", p.appearance],
+  ["Odour profile", p.odour],
+  ["Origin", "India"],
+  ["Documentation", "Specification sheet, COA & MSDS on request"],
+];
+
+const schema = [
+  {
+    "@context": "https://schema.org",
+    "@type": "Product",
+    name: typeLabel,
+    description: p.summary,
+    url,
+    image: new URL(shareImage.src, Astro.site).href,
+    brand: { "@type": "Brand", name: SITE.brand },
+    manufacturer: { "@id": new URL("/#organization", Astro.site).href },
+    category: p.type,
+    material: p.botanical,
+    countryOfOrigin: "IN",
+    additionalProperty: specs.map(([name, value]) => ({ "@type": "PropertyValue", name, value })),
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "Home", item: Astro.site?.href },
+      { "@type": "ListItem", position: 2, name: "Products", item: new URL("/products", Astro.site).href },
+      { "@type": "ListItem", position: 3, name: p.name, item: url },
+    ],
+  },
+];
+---
+<BaseLayout
+  title={p.metaTitle}
+  description={p.metaDescription}
+  image={shareImage}
+  imageAlt={p.bottle ? p.bottleAlt : p.ingredientAlt}
+  type="product"
+  schema={schema}
+>
+  <section class="section" style="padding-top:clamp(40px,6vw,70px)">
+    <div class="wrap">
+      <ol class="crumbs" aria-label="Breadcrumb">
+        <li><a href="/">Home</a></li><li><a href="/products">Products</a></li><li aria-current="page">{p.name}</li>
+      </ol>
+      <div class="pd">
+        <div class="pd__media">
+          <div class="frame frame--square">
+            <ProductVisual p={hero} lazy={false} large />
+          </div>
+        </div>
+        <div>
+          <span class="pd__type">{p.type} · {p.family}</span>
+          <h1>{typeLabel}</h1>
+          <span class="native" lang="hi">{p.native}</span>
+          <p class="pd__tag">{p.tagline}</p>
+          <p class="lead">{p.summary}</p>
+          <div class="actions">
+            <a class="btn btn--gold" href={`/contact?type=bulk&product=${p.slug}`}>Request a Quote <Icon name="arrow" /></a>
+            <a class="btn btn--ghost" href={`/contact?type=sample&product=${p.slug}`}>Request a Sample</a>
+          </div>
+
+          <h2>How it's made</h2>
+          <p>{p.process}</p>
+          <a class="link-arrow" href="#process">See the process step by step <Icon name="arrow" /></a>
+
+          <h2>Specifications</h2>
+          <div class="table-wrap">
+            <table class="spec">
+              <caption class="sr-only">{typeLabel} specifications</caption>
+              <tbody>{specs.map(([k, v]) => <tr><th scope="row">{k}</th><td>{v}</td></tr>)}</tbody>
+            </table>
+          </div>
+
+          <h2>Fragrance notes</h2>
+          <div class="notes" style={`--c:${p.color}`}>
+            <div><span>Top</span>{p.notes.top.join(", ")}</div>
+            <div><span>Heart</span>{p.notes.heart.join(", ")}</div>
+            <div><span>Base</span>{p.notes.base.join(", ")}</div>
+          </div>
+
+          <h2>Applications</h2>
+          <div class="chips">{p.applications.map((a) => <span class="chip">{a}</span>)}</div>
+
+          <h2>Supply &amp; packaging</h2>
+          <ul style="padding-left:1.2em;margin:0">{p.supply.map((s) => <li>{s}</li>)}</ul>
+          <p class="caption">MOQ, pricing and lead time quoted per order. Private label and custom packaging available — <a href="/#packaging" style="text-decoration:underline">design yours</a>.</p>
+
+          <div class="cta-box">
+            <h2>Buying {p.name} in bulk?</h2>
+            <p>Send your quantity, base preference and packaging — we'll reply with specification, pricing and lead time.</p>
+            <div class="actions" style="margin-top:18px">
+              <a class="btn btn--light" href={`/contact?type=bulk&product=${p.slug}`}>Get a Quote <Icon name="arrow" /></a>
+              <a class="btn btn--ghost-light" href={`https://wa.me/${SITE.whatsapp}?text=${encodeURIComponent(`Hello Innamora, I'd like a quote for ${typeLabel}.`)}`} target="_blank" rel="noopener">WhatsApp</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section section--sand" id="process" aria-labelledby="process-h">
+    <div class="wrap">
+      <div class="section-head section-head--split">
+        <div>
+          <span class="eyebrow">From {p.part.toLowerCase()} to {p.type === "Attar" ? "attar" : p.type === "Hydrosol" ? "rose water" : "oil"}</span>
+          <h2 id="process-h">How {p.name} <em>is made</em></h2>
+        </div>
+        <p class="lead">{p.method} — {p.type === "Attar" ? "the traditional, alcohol-free way Indian attars have been made for centuries." : "pure, alcohol-free and supplied without additives."}</p>
+      </div>
+      <ol class="process" style="list-style:none;padding:0;margin:0">
+        {steps.map((st) => (
+          <li class="process__step">
+            <figure><Image src={st.image} alt={st.alt} widths={[360, 560]} sizes="(min-width: 1100px) 20vw, (min-width: 640px) 45vw, 100vw" format="webp" quality={70} /></figure>
+            <div class="process__body"><h3>{st.title}</h3><p>{st.text}</p></div>
+          </li>
+        ))}
+      </ol>
+    </div>
+  </section>
+
+  <section class="section section--paper" aria-labelledby="related-h">
+    <div class="wrap">
+      <div class="section-head"><span class="eyebrow">You may also need</span><h2 id="related-h">Related <em>products</em></h2></div>
+      <div class="p-grid">{relatedCards.map((c) => <ProductCard p={c} />)}</div>
+    </div>
+  </section>
+</BaseLayout>
