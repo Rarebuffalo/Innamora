@@ -1,0 +1,185 @@
+---
+import { Image } from "astro:assets";
+import BaseLayout from "../layouts/BaseLayout.astro";
+import ProductCarousel from "../components/ProductCarousel.jsx";
+import PackagingAtelier from "../components/PackagingAtelier.jsx";
+import Icon from "../components/Icon.jsx";
+import Logo from "../components/Logo.jsx";
+import { PRODUCTS, INDUSTRIES } from "../data/products.js";
+import { SITE } from "../data/site.js";
+import { cardProps } from "../lib/images.js";
+import hero from "../assets/images/site/hero-oil.jpg";
+import still from "../assets/images/site/copper-still.jpg";
+import harvest from "../assets/images/site/harvest.jpg";
+
+const items = await Promise.all(PRODUCTS.map(cardProps));
+const atelierProducts = PRODUCTS.map(({ slug, name, color }) => ({ slug, name, color }));
+const schema = [{
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  name: SITE.name,
+  url: Astro.site?.href,
+  publisher: { "@id": new URL("/#organization", Astro.site).href },
+}];
+---
+<BaseLayout
+  title="Attar & Essential Oil Manufacturer in India | Innamora"
+  description="Manufacturer of alcohol-free Indian attars, essential oils and rose water, deg-bhapka distilled. Bulk supply, private label and custom packaging."
+  schema={schema}
+>
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero__grid">
+      <div class="hero__copy">
+        <span class="eyebrow">Attar · Essential Oil · Hydrosol Manufacturer</span>
+        <h1>Traditional Indian attars, <em>crafted for your brand.</em></h1>
+        <p class="lead">Innamora manufactures and supplies alcohol-free attars, essential oils and hydrosols — distilled the traditional deg-bhapka way and delivered in bulk, private label and custom packaging to perfumers, brands and manufacturers.</p>
+        <div class="actions">
+          <a class="btn btn--gold" href="/contact">Request a Quote <Icon name="arrow" /></a>
+          <a class="btn btn--ghost-light" href="/products">View Products</a>
+        </div>
+        <div class="hero__badges">
+          <span><Icon name="ban" /> Alcohol-free</span>
+          <span><Icon name="flame" /> Deg-bhapka distilled</span>
+          <span><Icon name="box" /> Bulk &amp; private label</span>
+        </div>
+      </div>
+      <div class="hero__media">
+        <Logo tagline decorative className="hero__logo" />
+        <Image src={hero} alt="Golden attar oil with rose petals in a glass bottle with a gold cap" widths={[480, 800, 1200]} sizes="(min-width: 960px) 48vw, 100vw" loading="eager" fetchpriority="high" format="webp" quality={76} />
+      </div>
+    </div>
+  </section>
+
+  <!-- TRUST -->
+  <section class="trust" aria-label="Why Innamora">
+    <div class="trust__item"><Icon name="ban" /><div><strong>100% alcohol-free</strong><span>No alcohol, solvents or synthetic carriers.</span></div></div>
+    <div class="trust__item"><Icon name="flame" /><div><strong>Traditional distillation</strong><span>Copper deg-bhapka stills, slow wood fire.</span></div></div>
+    <div class="trust__item"><Icon name="doc" /><div><strong>Batch consistency</strong><span>COA &amp; MSDS shared with every order.</span></div></div>
+    <div class="trust__item"><Icon name="box" /><div><strong>Bulk to retail-ready</strong><span>Drums, bottles, private label &amp; gift packs.</span></div></div>
+  </section>
+
+  <!-- PRODUCTS CAROUSEL -->
+  <section class="section" id="products" aria-labelledby="products-title">
+    <div class="wrap">
+      <div class="section-head section-head--split">
+        <div>
+          <span class="eyebrow">Our Products</span>
+          <h2 id="products-title">Our nine <em>signature naturals</em></h2>
+        </div>
+        <p class="lead">Floral, earthy, woody and herbal — each distilled from a single Indian botanical and supplied with full specifications for perfumery, cosmetics, incense and wellness manufacturing.</p>
+      </div>
+      <ProductCarousel client:visible items={items} />
+      <div class="actions" style="justify-content:center;margin-top:44px">
+        <a class="btn btn--ghost" href="/products">View all products &amp; specifications <Icon name="arrow" /></a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ABOUT TEASER -->
+  <section class="section section--paper" aria-labelledby="about-title">
+    <div class="wrap grid-2">
+      <div class="frame-stack">
+        <div class="frame frame--tall"><Image src={still} alt="Traditional copper still over a brick furnace used for deg-bhapka distillation" widths={[480, 760]} sizes="(min-width: 900px) 40vw, 90vw" format="webp" quality={72} /></div>
+        <div class="frame frame--small"><Image src={harvest} alt="Flower harvest in an Indian field" widths={[300, 480]} sizes="(min-width: 900px) 18vw, 40vw" format="webp" quality={72} /></div>
+      </div>
+      <div>
+        <span class="eyebrow">About Innamora</span>
+        <h2 id="about-title">A heritage craft, <em>made for modern industry.</em></h2>
+        <p class="lead" style="margin-top:20px">We bring the centuries-old art of Indian attar making to businesses that need authentic, natural fragrance at consistent quality — from small perfume labels to large manufacturers.</p>
+        <div class="features" style="margin-top:28px">
+          <div class="feature"><Icon name="leaf" /><div><h3>Sourced at the source</h3><p>Flowers, roots and woods from Indian growing regions, harvested at peak fragrance.</p></div></div>
+          <div class="feature"><Icon name="flame" /><div><h3>Distilled in copper</h3><p>Slow deg-bhapka distillation into natural sandalwood oil or your chosen base.</p></div></div>
+          <div class="feature"><Icon name="shield" /><div><h3>Checked every batch</h3><p>Odour, appearance and specification matched against approved standards.</p></div></div>
+        </div>
+        <a class="link-arrow" href="/about" style="margin-top:30px">More about us <Icon name="arrow" /></a>
+      </div>
+    </div>
+  </section>
+
+  <!-- APPLICATIONS -->
+  <section class="section section--tint" id="applications" aria-labelledby="apps-title">
+    <div class="wrap">
+      <div class="section-head section-head--split">
+        <div>
+          <span class="eyebrow">Fragrance Applications</span>
+          <h2 id="apps-title">Industries <em>we supply</em></h2>
+        </div>
+        <p class="lead">Our attars, oils and hydrosols are formulated into products across perfumery, personal care, incense, wellness, home fragrance and hospitality.</p>
+      </div>
+      <div class="industries">
+        {INDUSTRIES.map((x) => (
+          <div class="industry"><Icon name={x.icon} /><h3>{x.title}</h3><p>{x.text}</p></div>
+        ))}
+      </div>
+      <div class="actions" style="justify-content:center;margin-top:44px">
+        <a class="btn btn--light" href="/products#applications">Applications by product <Icon name="arrow" /></a>
+      </div>
+    </div>
+  </section>
+
+  <!-- PROCESS -->
+  <section class="section" aria-labelledby="process-title">
+    <div class="wrap">
+      <div class="section-head section-head--split">
+        <div>
+          <span class="eyebrow">Our Process</span>
+          <h2 id="process-title">From botanical <em>to batch</em></h2>
+        </div>
+        <p class="lead">Traditional methods, documented and repeatable — so every delivery matches the sample you approved.</p>
+      </div>
+      <ol class="steps" style="list-style:none;padding:0;margin:0">
+        <li class="step"><h3>Source</h3><p>Botanicals selected from trusted growers at peak season.</p></li>
+        <li class="step"><h3>Distil</h3><p>Hydro or deg-bhapka distillation in copper — no alcohol, no solvents.</p></li>
+        <li class="step"><h3>Mature</h3><p>Rested so the notes settle, round and deepen.</p></li>
+        <li class="step"><h3>Test</h3><p>Batch checked against the approved standard; COA and MSDS issued.</p></li>
+        <li class="step"><h3>Pack &amp; ship</h3><p>Filled into bulk containers or your custom packaging, dispatched across India and abroad.</p></li>
+      </ol>
+    </div>
+  </section>
+
+  <!-- PACKAGING -->
+  <section class="section section--paper" id="packaging" aria-labelledby="pack-title">
+    <div class="wrap">
+      <div class="section-head section-head--split">
+        <div>
+          <span class="eyebrow">Packaging Customisation</span>
+          <h2 id="pack-title">Private label, <em>your way.</em></h2>
+        </div>
+        <p class="lead">Launch your own attar range or corporate gift without sourcing a single component. Compose bottle, glass, closure and gift box below, add your brand name, and send us the specification.</p>
+      </div>
+      <PackagingAtelier client:visible products={atelierProducts} />
+    </div>
+  </section>
+
+  <!-- WHY PARTNER -->
+  <section class="section" aria-labelledby="why-title">
+    <div class="wrap grid-2" style="align-items:start">
+      <div>
+        <span class="eyebrow">Why Partner With Us</span>
+        <h2 id="why-title">A dependable supplier, <em>start to finish.</em></h2>
+        <p class="lead" style="margin-top:20px">Whether you need 1 kg for a trial batch or regular drums for production, we make sourcing natural fragrance simple.</p>
+        <div class="actions"><a class="btn" href="/contact?type=sample">Request a Sample <Icon name="arrow" /></a></div>
+      </div>
+      <div class="features">
+        <div class="feature"><Icon name="layers" /><div><h3>Flexible quantities</h3><p>Trial lots to production volumes, with MOQs agreed per product.</p></div></div>
+        <div class="feature"><Icon name="tag" /><div><h3>Private label</h3><p>Your brand on our attars — formulation, filling, labelling and boxing.</p></div></div>
+        <div class="feature"><Icon name="doc" /><div><h3>Documentation</h3><p>Specification sheets, COA and MSDS for every product.</p></div></div>
+        <div class="feature"><Icon name="truck" /><div><h3>Pan-India &amp; export</h3><p>Secure packing and reliable dispatch to India and international buyers.</p></div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="section cta-band" aria-labelledby="cta-title">
+    <div class="wrap">
+      <span class="eyebrow">Bulk · Private Label · Custom Packaging</span>
+      <h2 id="cta-title">Let's build your <em>fragrance range.</em></h2>
+      <p class="lead">Share your product, quantity and packaging needs — we'll reply with specifications, pricing and lead times within one working day.</p>
+      <div class="actions">
+        <a class="btn btn--gold" href="/contact">Request a Quote <Icon name="arrow" /></a>
+        <a class="btn btn--ghost-light" href={`https://wa.me/${SITE.whatsapp}`} rel="noopener" target="_blank">WhatsApp Us</a>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
