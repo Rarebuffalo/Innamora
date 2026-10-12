@@ -1,0 +1,101 @@
+---
+/* Every page goes through this layout: one <h1> per page, unique title and
+   description, canonical URL, Open Graph / Twitter cards and JSON-LD. */
+import "@fontsource-variable/cormorant-garamond/wght.css";
+import "@fontsource-variable/cormorant-garamond/wght-italic.css";
+import "@fontsource/jost/300.css";
+import "@fontsource/jost/400.css";
+import "@fontsource/jost/500.css";
+import "../styles/global.css";
+// Preload the latin font files used above the fold (prevents layout shift on font swap).
+import fDisplay from "@fontsource-variable/cormorant-garamond/files/cormorant-garamond-latin-wght-normal.woff2?url";
+import fDisplayIt from "@fontsource-variable/cormorant-garamond/files/cormorant-garamond-latin-wght-italic.woff2?url";
+import fBody300 from "@fontsource/jost/files/jost-latin-300-normal.woff2?url";
+import fBody400 from "@fontsource/jost/files/jost-latin-400-normal.woff2?url";
+import fBody500 from "@fontsource/jost/files/jost-latin-500-normal.woff2?url";
+import { getImage } from "astro:assets";
+import Header from "../components/Header.jsx";
+import Footer from "../components/Footer.jsx";
+import Analytics from "../components/Analytics.astro";
+import { SITE, ANALYTICS } from "../data/site.js";
+import ogDefault from "../assets/images/site/hero-oil.jpg";
+
+interface Props {
+  title: string;
+  description: string;
+  image?: ImageMetadata;
+  imageAlt?: string;
+  type?: "website" | "article" | "product";
+  schema?: object[];
+  noindex?: boolean;
+}
+const { title, description, image = ogDefault, imageAlt = "Innamora traditional Indian attar", type = "website", schema = [], noindex = false } = Astro.props;
+const cleanPath = Astro.url.pathname.replace(/\.html$/, "").replace(/\/index$/, "").replace(/\/$/, "") || "/";
+const canonical = new URL(cleanPath, Astro.site).href;
+const og = await getImage({ src: image, width: 1200, height: 630, fit: "cover", format: "jpg", quality: 80 });
+const ogUrl = new URL(og.src, Astro.site).href;
+const fullTitle = title.includes("Innamora") ? title : `${title} | Innamora`;
+
+const org = {
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  "@id": new URL("/#organization", Astro.site).href,
+  name: SITE.name,
+  alternateName: [SITE.brand, SITE.shortName],
+  url: Astro.site?.href,
+  logo: new URL("/logo.svg", Astro.site).href,
+  description: SITE.description,
+  email: SITE.email,
+  telephone: SITE.phone,
+  address: { "@type": "PostalAddress", streetAddress: SITE.address.street, addressLocality: SITE.address.city, addressRegion: SITE.address.region, postalCode: SITE.address.postalCode, addressCountry: SITE.address.country },
+  contactPoint: [{ "@type": "ContactPoint", contactType: "sales", email: SITE.email, telephone: SITE.phone, areaServed: "Worldwide", availableLanguage: ["English", "Hindi"] }],
+};
+const ld = [org, ...schema];
+---
+<!doctype html>
+<html lang="en-IN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>{fullTitle}</title>
+  <meta name="description" content={description} />
+  <link rel="canonical" href={canonical} />
+  {noindex && <meta name="robots" content="noindex" />}
+  <meta name="theme-color" content="#FCFAF6" />
+  {[fDisplay, fDisplayIt, fBody300, fBody400, fBody500].map((f) => <link rel="preload" href={f} as="font" type="font/woff2" crossorigin />)}
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+  <link rel="sitemap" href="/sitemap-index.xml" />
+
+  <meta property="og:site_name" content={SITE.name} />
+  <meta property="og:type" content={type === "product" ? "product" : type} />
+  <meta property="og:title" content={fullTitle} />
+  <meta property="og:description" content={description} />
+  <meta property="og:url" content={canonical} />
+  <meta property="og:image" content={ogUrl} />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt" content={imageAlt} />
+  <meta property="og:locale" content="en_IN" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content={fullTitle} />
+  <meta name="twitter:description" content={description} />
+  <meta name="twitter:image" content={ogUrl} />
+
+  {ld.map((s) => <script type="application/ld+json" set:html={JSON.stringify(s)} />)}
+  <Analytics />
+</head>
+<body>
+  {ANALYTICS.gtmId && <noscript><iframe src={`https://www.googletagmanager.com/ns.html?id=${ANALYTICS.gtmId}`} height="0" width="0" style="display:none;visibility:hidden" title="Google Tag Manager"></iframe></noscript>}
+  <a class="skip-link" href="#main">Skip to content</a>
+  <Header path={Astro.url.pathname.replace(/\.html$/, "")} />
+  <main id="main"><slot /></main>
+  <Footer />
+  <script>
+    import "../scripts/tracking.ts";
+    // Close the no-JS mobile menu after choosing a link (only script on most pages).
+    document.querySelectorAll(".mnav a").forEach((a) =>
+      a.addEventListener("click", () => a.closest("details")?.removeAttribute("open"))
+    );
+  </script>
+</body>
+</html>
